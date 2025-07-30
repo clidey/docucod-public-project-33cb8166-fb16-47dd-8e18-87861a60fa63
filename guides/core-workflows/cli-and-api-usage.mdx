@@ -1,0 +1,275 @@
+---
+title: "Using the CLI and HTTP API"
+description: "Covers direct command-line usage and API endpoints to trigger and monitor jobs, enabling automation and custom workflow integrations. Maps CLI/API capabilities to real developer needs."
+---
+
+# Using the CLI and HTTP API
+
+This guide explains how to use CodeBoarding's Command Line Interface (CLI) and HTTP API endpoints to trigger codebase analysis jobs, monitor their progress, and integrate CodeBoarding into automated or custom workflows. It focuses specifically on the CLI commands and HTTP API routes designed for developers who want to automate onboarding documentation generation and manage analysis jobs.
+
+---
+
+## 1. Overview of CLI and HTTP API Usage
+
+### Purpose
+This page helps you automate and control CodeBoarding's analysis and documentation generation through:
+- Command-line scripts for local or integrated use
+- HTTP API endpoints for remote job orchestration and monitoring
+
+You’ll learn how to start, track, and manage analysis jobs programmatically, enabling seamless integration into CI/CD pipelines, IDE extensions, or custom development workflows.
+
+### Prerequisites
+- CodeBoarding installed and configured with required environment variables (see Setup & Installation guides).
+- Access to a GitHub repository URL or a local Python project to analyze.
+- For API usage, a running instance of the CodeBoarding FastAPI service.
+
+### Expected Outcome
+- Launch analysis jobs via CLI or HTTP API
+- Retrieve real-time status and results of analysis jobs
+- Automate documentation generation for any target repo
+
+### Time Estimate
+About 15-30 minutes to run initial commands and understand API flow.
+
+### Skill Level
+Intermediate (familiarity with command-line tools and REST API concepts)
+
+---
+
+## 2. Using the Command Line Interface (CLI)
+
+CodeBoarding offers CLI scripts for generating onboarding documentation and updating specific components.
+
+### a. Running Full Analysis on a Local Repository
+
+Use the `vscode_runnable.py` script to generate full analysis:
+
+```bash
+python vscode_runnable.py --repo /path/to/local/repo --project_name YourProjectName --output_dir ./analysis_output
+```
+
+- **Parameters:**
+  - `--repo`: Path to your local Python project to analyze.
+  - `--project_name`: Friendly name for the project.
+  - `--output_dir` (optional): Directory to save analysis files.
+
+- **Outcome:**
+  - Generates analysis JSON and documentation files in the specified output directory.
+
+### b. Partial Updates for Specific Components
+
+If you want to update only one component in an existing analysis, specify component and analysis:
+
+```bash
+python vscode_runnable.py \
+  --repo /path/to/local/repo \
+  --project_name YourProjectName \
+  --output_dir ./analysis_output \
+  --partial_updates_component ComponentName \
+  --partial_updates_analysis on_boarding
+```
+
+- Updates only the `ComponentName` in the specified `partial_updates_analysis` JSON.
+
+### c. Bulk Documentation Generation
+
+The `demo.py` script allows you to generate onboarding docs for multiple GitHub repos easily:
+
+```bash
+python demo.py https://github.com/user/repo1 https://github.com/user/repo2 --output-dir ./docs
+```
+
+- Clones repos, runs analysis, generates Markdown docs.
+- Copies results to specified output directory if provided.
+
+---
+
+## 3. Using the HTTP API
+
+CodeBoarding exposes a FastAPI server with endpoints that let you trigger, monitor, and manage onboarding generation jobs.
+
+### a. Start a New Job
+
+Send a POST request to create an analysis job:
+
+```
+POST /generation
+
+Query Parameters:
+  repo_url: string (GitHub repo URL)
+
+Response:
+  {
+    "job_id": "<uuid>",
+    "status": "PENDING"
+  }
+```
+
+### b. Get Job Status and Result
+
+Retrieve the current status and result (if done) with:
+
+```
+GET /generation/{job_id}
+
+Response:
+  {
+    "id": "<uuid>",
+    "status": "PENDING | RUNNING | COMPLETED | FAILED",
+    "result": <URL or detailed content if completed>,
+    "error": <error message if failed>,
+    "created_at": "...",
+    "started_at": "...",
+    "finished_at": "...",
+    "repo_url": "..."
+  }
+```
+
+### c. GitHub Action Oriented Job API
+
+These endpoints support broader task management integrated with CI/CD:
+
+#### Start docs generation job
+
+```
+POST /github_action/jobs
+
+Request body (JSON):
+{
+  "url": "https://github.com/user/repo",
+  "source_branch": "main",              # optional, default: main
+  "target_branch": "main",              # optional, default: main
+  "extension": ".md",                    # output format: .md, .html, .mdx
+  "output_directory": ".codeboarding"  # output dir in repo
+}
+
+Response:
+{
+  "job_id": "<uuid>",
+  "message": "Job created successfully. Use the job_id to check status."
+}
+```
+
+#### Get job status
+
+```
+GET /github_action/jobs/{job_id}
+
+Response includes:
+- job status
+- result files content serialized as JSON when completed
+- error message if failed
+```
+
+#### List all jobs
+
+```
+GET /github_action/jobs
+
+Response:
+{
+  "jobs": [
+    { "job_id": "...", "status": "...", "created_at": "...", ... },
+    ...
+  ]
+}
+```
+
+---
+
+## 4. Practical Examples
+
+### Example: Running CLI Full Analysis
+
+```bash
+python vscode_runnable.py --repo ./my-python-project --project_name MyProject --output_dir ./out
+```
+
+Check `./out` for generated JSON and Markdown files.
+
+### Example: Starting a Job via HTTP API (curl)
+
+```bash
+curl -X POST "http://localhost:8000/github_action/jobs" \
+  -H "Content-Type: application/json" \
+  -d '{
+        "url": "https://github.com/example/myrepo",
+        "source_branch": "main",
+        "target_branch": "main",
+        "extension": ".md"
+      }'
+```
+
+Response will include a `job_id` to check status.
+
+### Example: Check Job Status
+
+```bash
+curl http://localhost:8000/github_action/jobs/<job_id>
+```
+
+Returns detailed job status and analysis output if completed.
+
+---
+
+## 5. Best Practices & Tips
+
+- **Use Extensions Consistently:** Supported output formats include `.md`, `.html`, and `.mdx`. Default is `.md`.
+- **Job Concurrency:** The API limits concurrent running jobs (default 5). Queue jobs accordingly.
+- **Use Background Tasks:** When submitting via API, jobs run asynchronously; you must poll for completion.
+- **Local vs CI/CD:** For local development, CLI scripts are fastest. Use API for automated pipelines.
+- **Keep Environment Variables Configured:** Ensure `REPO_ROOT`, LLM API keys, and others are set as they impact job execution.
+
+---
+
+## 6. Troubleshooting
+
+### Common Issues
+
+- **Job stuck in PENDING:** Could be concurrency limits; wait or increase capacity.
+- **Failed to clone repo:** Check GitHub URL correctness, access rights, private token configuration.
+- **No documentation files generated:** Review logs, confirm repo contains Python code.
+- **Unsupported output format error:** Use `.md`, `.html`, or `.mdx` only.
+
+### Logs
+- CLI scripts log extensively to the console.
+- API logs are accessible where the FastAPI server runs.
+
+### Recovery
+- Delete or clear temp folders if stuck.
+- Restart service if jobs hang unexpectedly.
+
+---
+
+## 7. Next Steps & Related Content
+
+- [Running Your First CodeBase Analysis](guides/getting-started/analyzing-first-repo) for initial repo scanning
+- [Configuration & Environment Variables](getting-started/configuration-first-run/config-env-vars) for setting up env
+- [Integrating with IDEs and CI/CD](guides/core-workflows/working-with-integrations) to connect CLI/API in workflows
+- [Customizing Analysis Depth and Cache](guides/core-workflows/customizing-analysis) for tailored runs
+- [Understanding Generated Diagrams](guides/getting-started/understanding-diagrams) to interpret output
+
+---
+
+## Diagram: API Interaction Flow
+
+```mermaid
+flowchart TD
+    A[User / CI Pipeline] -->|Trigger| B[POST /github_action/jobs]
+    B --> C[Create Job & Insert into DB]
+    C --> D[Background Task: generate_analysis]
+    D --> E[Clone Repo + Generate Diagrams and Docs]
+    E --> F[Store results & update status COMPLETED]
+    A -->|Poll status| G[GET /github_action/jobs/{job_id}]
+    G --> H{Job Status}
+    H -->|PENDING or RUNNING| I[Wait & Retry]
+    H -->|COMPLETED| J[Retrieve result files]
+    H -->|FAILED| K[Retrieve error info]
+```
+
+---
+
+## Summary
+This page explained how to use CodeBoarding's CLI and HTTP API to programmatically run codebase analyses and generate onboarding documentation. It provides practical command examples, request/response models for HTTP endpoints, best practices for concurrent job management, troubleshooting advice, and logical next steps for deeper integration. Use this guide alongside setup and installation documentation to effectively automate and scale CodeBoarding in your projects.
+
+---

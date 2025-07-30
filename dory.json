@@ -1,0 +1,143 @@
+{
+  "background": {
+    "decoration": "gradient"
+  },
+  "colors": {
+    "dark": "#1E3A8A",
+    "light": "#60A5FA",
+    "primary": "#60A5FA"
+  },
+  "favicon": "/favicon.svg",
+  "fonts": {
+    "family": "Montserrat",
+    "format": "woff2",
+    "source": "https://fonts.gstatic.com/s/googlesansflex/v5/t5sJIQcYNIWbFgDgAAzZ34auoVyXkJCOvp3SFWJbN5hF8Ju1x6sKCyp0l9sI40swNJwGpVd4AZzz0v6lJ4qFXNZhGjLvDSkV4USKMo6qQzwliVdHAy9jxTDHg_ugnAakpwGc-cxgUqDCIUI.woff2"
+  },
+  "icons": {
+    "library": "fontawesome"
+  },
+  "logo": {
+    "dark": "./logo/logo.svg",
+    "light": "./logo/logo.svg"
+  },
+  "name": "CodeBoarding",
+  "navigation": {
+    "tabs": [
+      {
+        "groups": [
+          {
+            "group": "Product Introduction \u0026 Value",
+            "pages": [
+              "overview/intro-value-prop/what-is-codeboarding",
+              "overview/intro-value-prop/target-audience-use-cases"
+            ]
+          },
+          {
+            "group": "Architecture \u0026 Core Concepts",
+            "pages": [
+              "overview/architecture-core-concepts/system-architecture-overview",
+              "overview/architecture-core-concepts/core-concepts-terminology"
+            ]
+          },
+          {
+            "group": "Features \u0026 Integrations",
+            "pages": [
+              "overview/features-integrations/quick-feature-tour",
+              "overview/features-integrations/integration-touchpoints"
+            ]
+          }
+        ],
+        "tab": "Overview"
+      },
+      {
+        "groups": [
+          {
+            "group": "Setup \u0026 Installation",
+            "pages": [
+              "getting-started/setup-installation/prerequisites",
+              "getting-started/setup-installation/environment-setup",
+              "getting-started/setup-installation/installation-multi-platform"
+            ]
+          },
+          {
+            "group": "Configuration \u0026 First Run",
+            "pages": [
+              "getting-started/configuration-first-run/config-env-vars",
+              "getting-started/configuration-first-run/first-analysis",
+              "getting-started/configuration-first-run/quick-validation"
+            ]
+          },
+          {
+            "group": "Troubleshooting \u0026 Support",
+            "pages": [
+              "getting-started/troubleshooting-support/troubleshooting-install",
+              "getting-started/troubleshooting-support/community-links"
+            ]
+          }
+        ],
+        "tab": "Getting Started"
+      },
+      {
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "guides/getting-started/installation-setup",
+              "guides/getting-started/analyzing-first-repo",
+              "guides/getting-started/understanding-diagrams"
+            ]
+          },
+          {
+            "group": "Core Workflows",
+            "pages": [
+              "guides/core-workflows/customizing-analysis",
+              "guides/core-workflows/working-with-integrations",
+              "guides/core-workflows/cli-and-api-usage"
+            ]
+          },
+          {
+            "group": "Best Practices \u0026 Advanced Tips",
+            "pages": [
+              "guides/best-practices/llm-tuning-diagrams",
+              "guides/best-practices/scaling-onboarding",
+              "guides/best-practices/visualization-tips"
+            ]
+          }
+        ],
+        "tab": "Guides"
+      },
+      {
+        "groups": [
+          {
+            "group": "Core Architecture \u0026 Data Flow",
+            "pages": [
+              "concepts/core-architecture-overview/concept-architecture-essentials",
+              "concepts/core-architecture-overview/concept-end-to-end-analysis-journey",
+              "concepts/core-architecture-overview/concept-integration-patterns"
+            ]
+          },
+          {
+            "group": "Analysis Models \u0026 Data Structures",
+            "pages": [
+              "concepts/core-analysis-models/concept-static-analysis-model",
+              "concepts/core-analysis-models/concept-ai-llm-analysis",
+              "concepts/core-analysis-models/concept-diagram-generation"
+            ]
+          },
+          {
+            "group": "Scalability \u0026 Performance Principles",
+            "pages": [
+              "concepts/scalability-performance/concept-scalability-parallelism",
+              "concepts/scalability-performance/concept-caching-persistence"
+            ]
+          }
+        ],
+        "tab": "Concepts"
+      }
+    ]
+  },
+  "styling": {
+    "codeblocks": "dark",
+    "eyebrows": "breadcrumbs"
+  }
+}

@@ -1,0 +1,192 @@
+---
+title: "Analyzing Your First Repository"
+description: "Guides users through running their first codebase analysis using the demo script, interpreting outputs, and navigating generated diagrams. Highlights essential CLI commands and what to expect from a successful run."
+---
+
+# Analyzing Your First Repository
+
+Welcome to your first hands-on experience with CodeBoarding! This guide takes you through the practical steps of running your initial codebase analysis on a Python project repository using the demo script. You'll learn how to initiate the analysis, interpret key outputs, and navigate the automatically generated architectural diagrams.
+
+---
+
+## 1. What You Will Achieve
+
+By following this guide, you will:
+
+- Run CodeBoarding’s CLI demo script on a target Python repository.
+- Observe and understand the structure of generated analysis files.
+- Access and interpret interactive diagrams representing your codebase.
+- Recognize essential CLI commands and their effects.
+
+**Estimated duration:** 15-30 minutes  
+**Skill level:** Beginner to Intermediate  
+
+---
+
+## 2. Prerequisites
+
+Before starting, please ensure:
+
+- CodeBoarding is installed and your environment is set up per the [Installation & Environment Setup guide](https://your.documentation/links/guides/getting-started/installation-setup).
+- You have configured the necessary environment variables, including LLM provider API keys, repository paths, and output directories as described in [Configuration & Environment Variables](https://your.documentation/links/getting-started/configuration-first-run/config-env-vars).
+- You have access to the repository URL you want to analyze (public or with credentials configured).
+
+> <Check>Confirm your Python environment is active and CodeBoarding dependencies are installed, otherwise refer back to the installation documentation.</Check>
+
+---
+
+## 3. Running the First Analysis
+
+Follow these step-by-step instructions to analyze your first Python repository using the demo script:
+
+<Steps>
+<Step title="Prepare your target repository URL">
+Identify the GitHub repository URL you want to analyze. For example, a simple public Python project such as `https://github.com/psf/requests`.
+</Step>
+<Step title="Open your terminal and navigate to CodeBoarding root">
+Ensure you are inside your CodeBoarding project directory where `demo.py` is located.
+</Step>
+<Step title="Execute the demo analysis command">
+Run the following command replacing `<github_repo_url>` with your target repo:
+
+```bash
+python demo.py <github_repo_url> --output-dir ./results
+```
+
+Example:
+
+```bash
+python demo.py https://github.com/psf/requests --output-dir ./results
+```
+
+This will start the analysis and save output files under the specified `./results` directory.
+</Step>
+<Step title="Watch the analysis progress">
+The script will:
+
+- Clone the repository locally.
+- Perform static code analysis using AST and call graph extraction.
+- Invoke the AI analysis engine that generates high-level abstractions.
+- Validate and save analysis results, including interactive diagram JSON files.
+
+Logs will be printed to your terminal providing status updates and any warnings.
+</Step>
+<Step title="Confirm analysis completion">
+On success, you will see a summary message listing all generated output files.
+
+Example:
+
+```
+Generated analysis files: ['/absolute/path/results/analysis.json', ...]
+```
+</Step>
+</Steps>
+
+---
+
+## 4. Understanding the Output
+
+The output folder will contain:
+
+- `analysis.json`: The root analysis file describing main components and relationships.
+- Multiple `.json` files named after discovered components/modules, each representing detailed analysis including component hierarchy, relationships, and diagram data.
+- `codeboarding_version.json`: Metadata about the analysis run and tool version.
+
+### Interactive Diagrams
+
+Within the output files, CodeBoarding produces Mermaid.js diagram data that visualize:
+
+- Component relationships
+- Call graphs
+- Structure graphs
+
+You can open and render these Mermaid diagrams using compatible Markdown viewers, VS Code with Mermaid preview extensions, or by embedding in documentation sites that support Mermaid.
+
+---
+
+## 5. Key CLI Command Recap
+
+| Command Element | Purpose |
+|-----------------|---------|
+| `python demo.py` | Starts the demonstration analysis.
+| `<github_repo_url>` | URL of repository to analyze.
+| `--output-dir <path>` | Specifies the directory where output files and diagrams are saved.
+
+> <Tip>If you want to analyze a different repository or save output elsewhere, simply adjust these parameters accordingly.</Tip>
+
+---
+
+## 6. Best Practices & Tips
+
+- **Use small or well-known repositories initially** to understand the output clearly.
+- **Review log output carefully** to catch early warnings or errors related to environment configuration.
+- **Leverage Mermaid.js viewers** to interact with and explore generated diagrams.
+- **Iterate on analysis depth** by adjusting settings such as `DIAGRAM_DEPTH_LEVEL` to balance output detail and complexity.
+
+---
+
+## 7. Troubleshooting Common Issues
+
+<AccordionGroup title="Troubleshooting Your First Analysis">
+<Accordion title="The analysis command fails or errors out immediately">
+- Verify Python version (3.11 or later recommended).
+- Check environment variables for missing or invalid API keys.
+- Confirm network connectivity if cloning private repos requires authentication.
+- Consult the installation troubleshooting page for environment and dependency issues.
+</Accordion>
+<Accordion title="No output files are generated after the run">
+- Check terminal logs for errors during cloning or analysis.
+- Ensure write permissions to the output directory.
+- Re-run with verbose logging if available to diagnose.
+</Accordion>
+<Accordion title="Generated diagrams don’t render in my viewer">
+- Confirm the viewer supports Mermaid.js diagrams.
+- Try online Mermaid live editors (https://mermaid.live/) to test the diagram JSON snippets.
+- Open `.json` files and look for diagram sections prefixed with Mermaid syntax.
+</Accordion>
+<Accordion title="Analysis runs but results seem incomplete or missing components">
+- Increase the diagram depth level environment variable to analyze deeper component layers.
+- Ensure the repository contains Python code and is not empty.
+- Look for warnings in log indicating skipped files due to unsupported syntax.
+</Accordion>
+</AccordionGroup>
+
+---
+
+## 8. Navigating Generated Diagrams
+
+After your first successful run, to explore the generated diagrams:
+
+1. Locate the JSON files in your specified output directory.
+2. Identify files for major components (e.g., `main_module.json`).
+3. Extract Mermaid diagram definitions embedded in those JSON or use tools integrated with CodeBoarding (e.g., VS Code extension) for interactive exploration.
+4. Follow component hierarchies and call graphs to understand module dependencies and system architecture.
+
+> <Info>Using the CodeBoarding VS Code extension enhances this experience by allowing direct interaction within your IDE.</Info>
+
+---
+
+## 9. What’s Next?
+
+After mastering your first repository analysis, consider these next steps:
+
+- Deepen your understanding with [Interpreting Codeboarding Diagrams & Documentation](https://your.documentation/links/guides/getting-started/understanding-diagrams).
+- Customize analyses via [Customizing the Analysis Process](https://your.documentation/links/guides/core-workflows/customizing-analysis).
+- Integrate CodeBoarding into your continuous workflows using [Working with IDEs and CI/CD](https://your.documentation/links/guides/core-workflows/working-with-integrations).
+
+Explore the entire [Getting Started Guide](https://your.documentation/links/guides/getting-started) to unlock the full potential of CodeBoarding.
+
+---
+
+## 10. Additional Resources
+
+- [CodeBoarding Architecture Overview](https://your.documentation/links/overview/architecture-core-concepts/system-architecture-overview)
+- [Static Code Analyzer Details](https://your.documentation/links/overview/architecture-core-concepts/static-code-analyzer)
+- [AI Analysis Engine Overview](https://your.documentation/links/overview/architecture-core-concepts/ai-analysis-engine)
+- [Troubleshooting Installation & Configuration](https://your.documentation/links/getting-started/troubleshooting-support/troubleshooting-install)
+- Official CodeBoarding [GitHub Repository](https://github.com/CodeBoarding/CodeBoarding)
+
+
+---
+
+Thank you for taking the first step to unlock your codebase’s architectural insights with CodeBoarding. Let's embark on this journey of clarity and streamlined onboarding together!

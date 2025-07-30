@@ -1,0 +1,192 @@
+---
+title: "Environment Setup"
+description: "Step-by-step guidance on creating a virtual environment and synchronizing required dependencies using the recommended tooling, with tips for both basic and advanced users."
+---
+
+# Environment Setup
+
+Welcome to the environment setup guide for CodeBoarding. This page provides you with clear, step-by-step instructions to create a Python virtual environment and synchronize all required dependencies using the recommended tooling. Whether you're a first-time user or an advanced developer, this guide ensures you get your environment ready quickly and correctly.
+
+---
+
+## 1. Prerequisites & System Checks
+
+Before starting, ensure your system meets these necessities:
+
+- **Python 3.11** or higher installed and accessible via command line.
+- Internet connectivity to download packages.
+- Access to your terminal or command prompt.
+
+> 💡 **Tip:** If you have multiple Python versions installed, explicitly specify Python 3.11 when creating your virtual environment.
+
+---
+
+## 2. Creating a Virtual Environment
+
+Isolation of dependencies through a virtual environment is vital for managing CodeBoarding’s requirements without conflicts.
+
+### Step-by-Step
+
+1. **Open your terminal**.
+2. Navigate to the root directory of your CodeBoarding project.
+
+```bash
+cd /path/to/CodeBoarding
+```
+
+3. Create a virtual environment named `venv` using Python 3.11:
+
+```bash
+uv venv --python 3.11
+```
+
+This command leverages `uv` tooling to consistently create a virtual environment. If you prefer manual setup, you can use:
+
+```bash
+python3.11 -m venv venv
+```
+
+4. Activate the environment:
+
+- On **macOS/Linux**:
+
+  ```bash
+  source venv/bin/activate
+  ```
+
+- On **Windows**:
+
+  ```powershell
+  .\venv\Scripts\Activate.ps1
+  ```
+
+5. Verify the correct Python version is active:
+
+```bash
+python --version
+# Output should be: Python 3.11.x
+```
+
+> ⚠️ If you see a different Python version, double-check your virtual environment creation and activation steps.
+
+---
+
+## 3. Synchronizing Dependencies
+
+CodeBoarding uses a carefully curated set of Python packages. To ensure version consistency, use the `uv pip sync` command.
+
+### Install dependencies
+
+Run this command inside the activated virtual environment:
+
+```bash
+uv pip sync
+```
+
+- This ensures all dependencies listed in the lock file are installed exactly as specified.
+- It will remove any extraneous packages to keep your environment clean.
+
+### Verification
+
+- After installation, confirm by running:
+  
+```bash
+pip list
+```
+
+You should see critical packages such as `langchain`, `dotenv`, `google-api-core`, among others.
+
+> 🔍 If you encounter errors during installation, check your internet connection and ensure your pip is up to date (`pip install --upgrade pip`).
+
+---
+
+## 4. Setting Up Environment Variables
+
+CodeBoarding depends on several environment variables for configuration, especially for AI provider API keys.
+
+### Typical environment variables to set:
+
+```bash
+# Choose only one LLM provider key (depending on which service you intend to use)
+OPENAI_API_KEY=                 # For OpenAI GPT
+ANTHROPIC_API_KEY=              # For Anthropic Claude
+GOOGLE_API_KEY=                 # For Google Gemini
+AWS_BEARER_TOKEN_BEDROCK=       # For AWS Bedrock
+
+# Configuration and paths
+CACHING_DOCUMENTATION=false      # Enable or disable documentation caching
+REPO_ROOT=./repos                # Path to where repos will be cloned
+ROOT_RESULT=./results            # Output directory for generated files
+PROJECT_ROOT=/path/to/CodeBoarding # Your local CodeBoarding repo root
+DIAGRAM_DEPTH_LEVEL=1            # Diagram generation detail depth
+
+# Optional
+GITHUB_TOKEN=                   # For private GitHub repo access
+LANGSMITH_TRACING=false          # LangSmith tracing flag
+LANGSMITH_ENDPOINT=              # LangSmith endpoint URL
+LANGSMITH_PROJECT=               # LangSmith project name
+LANGCHAIN_API_KEY=               # Additional LangChain API key
+```
+
+### How to set environment variables:
+
+- Create a `.env` file in your project root with the variables above.
+- Alternatively, export them in your shell profile or set before running commands.
+
+> 🛡️ **Security Tip:** Never commit your secrets or API keys to source control.
+
+---
+
+## 5. Validation & Best Practices
+
+Once the environment is set up and dependencies are installed:
+
+- **Run a quick validation:**
+
+  ```bash
+  python demo.py https://github.com/example/repo --output-dir ./results
+  ```
+
+- This will trigger a basic repository analysis using your environment.
+
+- Confirm no error messages appear regarding missing packages or keys.
+
+- Verify the results directory is populated post-run.
+
+> 💡 **Tip:** Our testing shows the best diagram results with the Google Gemini-2.5-Pro LLM provider, so if you have access, prioritize setting `GOOGLE_API_KEY`.
+
+---
+
+## 6. Troubleshooting Common Issues
+
+<AccordionGroup title="Common Issues During Environment Setup">
+<Accordion title="Python version mismatch or not found">
+Ensure Python 3.11 is installed and correctly referenced. Use `python3.11 --version` to check. Adjust virtual environment creation commands if needed.
+</Accordion>
+<Accordion title="Dependency installation fails or times out">
+Make sure your network allows package downloads. Upgrade pip using `pip install --upgrade pip`. If behind proxy, configure environment accordingly.
+</Accordion>
+<Accordion title="Environment variables not loaded">
+Confirm you have a `.env` file and that `dotenv` is loading it properly. Restart terminal or IDE after making changes.
+</Accordion>
+<Accordion title="API key errors or missing keys">
+Check that you set one and only one LLM provider API key. Verify key validity and expiration on provider portals.
+</Accordion>
+</AccordionGroup>
+
+---
+
+## 7. Next Steps
+
+- Proceed to [Installation (All Platforms)](/getting-started/setup-installation/installation-multi-platform) for full installation instructions.
+- Read [Running Your First CodeBase Analysis](/getting-started/configuration-first-run/first-analysis) once your environment is ready.
+- Join the community and access troubleshooting help at [Community & Support Resources](/getting-started/troubleshooting-support/community-links).
+
+
+---
+
+By carefully following these steps, you ensure your CodeBoarding environment is robust, clean, and ready for productive analysis runs.
+
+Welcome aboard to unlocking your codebase insights!
+
+---

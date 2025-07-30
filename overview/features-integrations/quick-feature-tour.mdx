@@ -1,0 +1,116 @@
+---
+title: "Quick Feature Overview"
+description: "Summarizes the core features: extraction of module relationships, multi-level LLM-driven abstraction, interactive diagram generation (Mermaid, HTML), and documentation automation. Outlines how users can generate onboarding docs and browse interactive system visuals."
+---
+
+# Quick Feature Overview
+
+Unlock the power of automated codebase comprehension with CodeBoarding’s core features. This page introduces you to the essential capabilities that enable CodeBoarding to transform raw source code into high-value, interactive architectural diagrams and onboarding documentation.
+
+---
+
+## Why Quick Feature Overview Matters
+
+When you first engage with a new codebase, understanding component relationships, system structure, and architecture can be overwhelming. CodeBoarding cuts through this complexity by extracting meaningful insights from your code and presenting them in a clear, actionable format. This guide summarizes the key features that drive this process.
+
+---
+
+## Core Features
+
+### 1. Extraction of Module Relationships
+CodeBoarding starts by statically analyzing your source code to extract modules and their interconnections. This includes:
+
+- Parsing control flow graphs (CFGs) to identify dependencies and call relationships.
+- Detecting module boundaries automatically.
+
+**Benefit:** Gain a concrete, structural map of your project’s internal architecture without manual effort.
+
+### 2. Multi-level LLM-driven Abstraction
+Beyond raw relationships, CodeBoarding leverages advanced Large Language Models (LLMs) to provide layered abstractions:
+
+- Summarizes complex modules into digestible concepts.
+- Recognizes design patterns, component roles, and architectural layers.
+- Supports multiple LLM providers including OpenAI, Anthropic, Google Gemini, and AWS Bedrock.
+
+**Benefit:** Understand not just how parts connect, but also what those parts mean and do within your system.
+
+### 3. Interactive Diagram Generation
+Visuals are central to comprehension. CodeBoarding outputs:
+
+- Interactive diagrams based on Mermaid.js syntax, easily embeddable in Markdown, HTML, or MDX format.
+- Multi-level visualization allowing deep dives from high-level overviews to detailed module internals.
+
+**Benefit:** Navigate your system architecture interactively, integrating diagrams seamlessly into existing documentation or development environments.
+
+### 4. Documentation Automation
+CodeBoarding automates the generation of onboarding documents that combine architecture, relationships, and insights:
+
+- Generates Markdown, HTML, or MDX output formats for diverse use cases.
+- Embeds interactive diagrams and detailed explanations.
+
+**Benefit:** Rapidly produce consistent, developer-friendly onboarding resources that reduce ramp-up times.
+
+---
+
+## Real-World Usage Scenario
+
+Imagine onboarding to a large, unfamiliar Python codebase with tangled dependencies and sparse documentation. With CodeBoarding, you:
+
+1. Trigger analysis through a GitHub repository URL or CI pipeline.
+2. Receive an interactive Mermaid.js diagram visualizing module relationships.
+3. Explore automatically generated documentation explaining each component’s role, abstraction layers, and code connections.
+4. Quickly identify critical areas or architectural patterns to accelerate development and decision-making.
+
+---
+
+## How This Page Fits In
+
+This overview aligns directly with the broader [Architecture & Core Concepts](https://www.codeboarding.org/overview/architecture-core-concepts) and [Integrations](https://www.codeboarding.org/overview/features-integrations/integration-touchpoints) sections of CodeBoarding documentation, providing a foundation before deep-diving into setup or system architecture details.
+
+For detailed component explanations, see [System Architecture Overview](https://www.codeboarding.org/overview/architecture-core-concepts/system-architecture-overview).
+
+---
+
+## Practical Tips & Best Practices
+
+- **Start with shallow depth:** Use the default diagram depth level (configurable through environment variable `DIAGRAM_DEPTH_LEVEL`) to get manageable initial outputs.
+- **Choose your LLM strategically:** Google Gemini-2.5-Pro is recommended for complex diagram generation.
+- **Embed diagrams in documentation portals:** Mermaid.js output works well within Markdown-based wikis and static site generators.
+- **Leverage automation for CI/CD:** Use GitHub Actions integration to automate diagram regeneration on code changes.
+
+
+---
+
+## Troubleshooting Common Issues
+
+- **No diagrams generated:** Verify that the static analysis completed successfully and that your codebase uses supported languages and structures.
+- **LLM abstraction incomplete or ambiguous:** Try different LLM providers or increase your diagram depth level.
+- **Output files missing or misplaced:** Ensure environment variables like `REPO_ROOT` and `ROOT_RESULT` are correctly configured.
+
+---
+
+## Getting Started Preview
+
+CodeBoarding’s key features are accessible through simple commands or integrations:
+
+```bash
+python demo.py https://github.com/user/yourrepo --output-dir ./docs
+```
+
+See the [Getting Started Setup & Installation](https://www.codeboarding.org/getting-started/setup-installation/prerequisites) for prerequisites and environment configuration.
+
+
+---
+
+## Related Resources
+
+- [What is CodeBoarding?](https://www.codeboarding.org/overview/intro-value-prop/what-is-codeboarding)
+- [Who Is It For? Key Use Cases](https://www.codeboarding.org/overview/intro-value-prop/target-audience-use-cases)
+- [System Architecture Overview](https://www.codeboarding.org/overview/architecture-core-concepts/system-architecture-overview)
+- [Integrating CodeBoarding](https://www.codeboarding.org/overview/features-integrations/integration-touchpoints)
+
+---
+
+Enjoy unlocking your codebase’s hidden architecture with CodeBoarding’s powerful feature set!
+
+---

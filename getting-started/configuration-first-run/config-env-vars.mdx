@@ -3,4 +3,225 @@ title: "Configuration & Environment Variables"
 description: "Understand and set the core environment variables for CodeBoarding, especially LLM provider keys, caching settings, paths for repositories, and output directories. Serves as a practical checklist to ensure your setup is ready for your first run."
 ---
 
-*This page will automatically be generated from the codebase*
+# Configuration & Environment Variables
+
+Welcome to the Configuration & Environment Variables guide for **CodeBoarding**. This page helps you **understand and set** the essential environment variables required to configure CodeBoarding effectively. Correct configuration ensures your system is ready to generate high-quality onboarding diagrams and documentation from your Python codebases.
+
+---
+
+## 1. Understanding the Core Environment Variables
+
+CodeBoarding relies on several environment variables to control its behavior, paths, and integration with LLM providers. Below is a practical checklist of the most important variables and what they do.
+
+| Variable               | Purpose                                                                                     | Required/Optional           | Typical Default             |
+|------------------------|---------------------------------------------------------------------------------------------|----------------------------|-----------------------------|
+| `OPENAI_API_KEY`       | Your OpenAI API key for GPT models.                                                         | Optional (use at least one) | -                           |
+| `ANTHROPIC_API_KEY`    | API key for Anthropic LLMs (Claude).                                                       | Optional (use at least one) | -                           |
+| `GOOGLE_API_KEY`       | API key for Google Gemini LLMs — recommended for complex diagrams for best results.       | Optional (use at least one) | -                           |
+| `AWS_BEARER_TOKEN_BEDROCK` | Bearer token to access AWS Bedrock LLM services.                                         | Optional (use at least one) | -                           |
+| `CACHING_DOCUMENTATION`| Enables or disables caching of generated documentation to speed up repeated runs.          | Optional                   | `false`                     |
+| `REPO_ROOT`            | File system path to the root directory where repositories will be cloned locally.          | Required                   | `./repos`                   |
+| `ROOT_RESULT`           | Path for storing the generated onboarding outputs and diagrams.                           | Optional                   | `./results`                 |
+| `PROJECT_ROOT`          | Root directory of the CodeBoarding source code, needed for development setups.            | Optional                   | `/path/to/CodeBoarding`     |
+| `DIAGRAM_DEPTH_LEVEL`   | Controls max depth of diagram generation to manage complexity.                            | Optional                   | `1`                         |
+| `GITHUB_TOKEN`          | Token to access private GitHub repositories securely.                                    | Optional                   | -                           |
+| `LANGSMITH_TRACING`     | Enable LangSmith tracing for LLM request logging (if applicable).                         | Optional                   | `false`                     |
+| `LANGSMITH_ENDPOINT`    | Endpoint URL for LangSmith tracing server.                                                | Optional                   | -                           |
+| `LANGSMITH_PROJECT`     | Name of the LangSmith project for trace grouping.                                        | Optional                   | -                           |
+| `LANGCHAIN_API_KEY`     | Optional API key for LangChain integrations.                                             | Optional                   | -                           |
+
+
+## 2. Setting Up Your Environment Variables
+
+Follow these step-by-step instructions to configure your environment for your first CodeBoarding run.
+
+### Step 1: Select and Configure Your LLM Provider Keys
+
+CodeBoarding supports multiple LLM providers. You need to choose **at least one** LLM provider key for the analysis engine. According to our experience, **Google Gemini‑2.5‑Pro** provides top-notch results.
+
+```bash
+# Example for setting environment variables on Linux/macOS
+export GOOGLE_API_KEY="your-google-api-key"
+# or
+export OPENAI_API_KEY="your-openai-api-key"
+# or
+export ANTHROPIC_API_KEY="your-anthropic-api-key"
+# or
+export AWS_BEARER_TOKEN_BEDROCK="your-aws-bedrock-token"
+```
+
+<Tip>
+If working with private GitHub repositories, also export your `GITHUB_TOKEN` with appropriate permissions for cloning.
+</Tip>
+
+### Step 2: Define Core Paths for Repositories and Outputs
+
+Set the `REPO_ROOT` to where CodeBoarding will clone repositories locally, and `ROOT_RESULT` for where generated markdown and diagrams will be saved.
+
+```bash
+export REPO_ROOT="./repos"
+export ROOT_RESULT="./results"
+```
+
+These paths can be absolute or relative. Ensure those directories are writable by your user.
+
+### Step 3: Set Diagram Generation Depth
+
+Control the max level of abstraction for your generated diagrams by setting:
+
+```bash
+export DIAGRAM_DEPTH_LEVEL=1
+```
+
+Increasing this depth increases detail but also runtime and output complexity.
+
+### Step 4: Optional Configuration for Development and Tracing
+
+If you want to enable tracing or use LangSmith for monitoring LLM calls:
+
+```bash
+export LANGSMITH_TRACING=true
+export LANGSMITH_ENDPOINT="https://your-langsmith-endpoint"
+export LANGSMITH_PROJECT="my-codeboarding-project"
+export LANGCHAIN_API_KEY="your-langchain-api-key"
+```
+
+These are optional but can provide valuable insights during development or debugging.
+
+### Step 5: Persist Environment Variables
+
+For consistent use, save your variables in a `.env` file at your project root:
+
+```ini
+OPENAI_API_KEY=your-openai-api-key
+REPO_ROOT=./repos
+ROOT_RESULT=./results
+DIAGRAM_DEPTH_LEVEL=1
+CACHING_DOCUMENTATION=false
+# Optional tokens
+GITHUB_TOKEN=your-github-token
+```
+
+Use `dotenv` to load this automatically when running CodeBoarding.
+
+---
+
+## 3. Practical Validation & Quick Checks
+
+After setting environment variables, validate your setup:
+
+- Run `printenv | grep -E 'OPENAI_API_KEY|GOOGLE_API_KEY|ANTHROPIC_API_KEY|AWS_BEARER_TOKEN_BEDROCK|REPO_ROOT|ROOT_RESULT'` to confirm variables are set.
+
+- Confirm your `REPO_ROOT` directory exists or will be created during the first run.
+
+- Check caching setting:
+
+```bash
+python -c "import os; print('Caching enabled:', os.getenv('CACHING_DOCUMENTATION', 'false').lower() in ('1','true','yes'))"
+```
+
+- Ensure you have network access to GitHub and chosen LLM API endpoints.
+
+---
+
+## 4. Best Practices and Tips
+
+- **Prioritize LLM keys**: CodeBoarding selects your LLM based on key priority: OpenAI first, then Anthropic, Google, and AWS Bedrock last.
+
+- **Keep keys secure**: Never commit API keys to source control.
+
+- **Use caching**: Enable `CACHING_DOCUMENTATION=true` if regenerating documentation repeatedly to optimize performance.
+
+- **Proper directory permissions**: Ensure write access to `REPO_ROOT` and `ROOT_RESULT`.
+
+- **Consistent environment**: Use virtual environments and `.env` files to keep configuration consistent.
+
+- **Remember depth impact**: Deeper diagram levels produce richer diagrams at the cost of longer execution time.
+
+---
+
+## 5. Common Pitfalls and Troubleshooting
+
+<AccordionGroup title="Troubleshooting Configuration Issues">
+<Accordion title="LLM API Key Not Set or Invalid">
+Verify your API key environment variables are correctly set and valid for the provider.
+
+```bash
+echo $OPENAI_API_KEY
+``` 
+
+If empty, ensure you've exported or put them in your `.env` file.
+
+Check your network connectivity to provider endpoints.
+
+</Accordion>
+<Accordion title="REPO_ROOT is Missing or Not Writable">
+Before first use, ensure the directory in `REPO_ROOT` exists or that CodeBoarding can create it.
+
+```bash
+mkdir -p ./repos
+chmod u+rwx ./repos
+```
+
+If you see errors about missing repository paths during generation, this is likely the cause.
+</Accordion>
+<Accordion title="Output Not Generating as Expected">
+Confirm `ROOT_RESULT` path is set and writable.
+
+Review logs for permission issues or disk space errors.
+
+Check caching setting in case cached results are being used unexpectedly.
+</Accordion>
+</AccordionGroup>
+
+---
+
+## 6. Next Steps
+
+With your environment variables configured, proceed to:
+
+- [Running Your First CodeBase Analysis](https://your.documentation.url/getting-started/configuration-first-run/first-analysis) to generate onboarding documentation for your first repository.
+- [Quick Validation & Output Review](https://your.documentation.url/getting-started/configuration-first-run/quick-validation) to learn how to interpret and verify outputs.
+- Explore [System Requirements & Prerequisites](https://your.documentation.url/getting-started/setup-installation/prerequisites) if not already done.
+
+---
+
+## Example `.env` file snippet
+
+```ini
+# API Keys
+GOOGLE_API_KEY=your-google-gemini-key
+# Core paths
+REPO_ROOT=./repos
+ROOT_RESULT=./results
+# Diagram depth
+DIAGRAM_DEPTH_LEVEL=1
+# Caching
+CACHING_DOCUMENTATION=true
+```
+
+---
+
+## Summary
+This page guided you through the essential environment variables and configuration steps to prepare CodeBoarding for your first analysis run. Properly setting LLM provider keys, repository paths, and output directories ensures smooth generation of onboarding diagrams.
+
+<Check>Remember to secure all API keys and avoid committing them to shared repositories.</Check>
+
+<Note>Use separate environment files or container environment variables to manage multiple projects or deployments cleanly.</Note>
+
+---
+
+For detailed installation help, see [Installation (All Platforms)](/getting-started/setup-installation/installation-multi-platform). To continue your initial setup, visit [Environment Setup](/getting-started/setup-installation/environment-setup).
+
+---
+
+## Related Links
+
+- [System Requirements & Prerequisites](/getting-started/setup-installation/prerequisites)
+- [Running Your First CodeBase Analysis](/getting-started/configuration-first-run/first-analysis)
+- [Troubleshooting Installation & Configuration](/getting-started/troubleshooting-support/troubleshooting-install)
+
+
+---
+
+_This section applies directly to CodeBoarding and does not include unrelated configuration details._

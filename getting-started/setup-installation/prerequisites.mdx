@@ -3,4 +3,187 @@ title: "System Requirements & Prerequisites"
 description: "Review the supported platforms, required Python version, and dependencies needed before installing CodeBoarding. Clarifies both minimum and recommended requirements to avoid common obstacles during setup."
 ---
 
-*This page will automatically be generated from the codebase*
+# System Requirements & Prerequisites
+
+Before you begin installing CodeBoarding, it is critical to confirm your environment meets the supported platforms, Python version, and dependency requirements outlined here. Establishing these prerequisites upfront ensures a smooth installation experience and prevents common roadblocks in setup.
+
+---
+
+## 1. Supported Platforms
+
+CodeBoarding is designed to run reliably on the following operating systems:
+
+- **Windows 10 and later**
+- **macOS 10.15 (Catalina) and later**
+- **Linux (Ubuntu 20.04+, Debian 10+, CentOS 8+, and equivalent distributions)**
+
+The tool requires a standard environment supporting Python 3.9 or newer. Ensure you use one of the platforms above with administrative privileges to install dependencies.
+
+
+### Best Practice
+
+Use the latest stable release of your OS to guarantee compatibility with dependencies and Python packages.
+
+
+## 2. Python Version Requirements
+
+CodeBoarding requires **Python 3.9 or higher**. Python 3.10 or 3.11 is recommended to leverage performance improvements and new language features.
+
+### How to Check Your Python Version:
+
+Open a terminal or command prompt and run:
+
+```bash
+python --version
+# or if `python` refers to 2.x
+python3 --version
+```
+
+Expected output should read something like:
+
+```
+Python 3.9.7
+```
+
+If your version is older than 3.9, you must upgrade Python before continuing.
+
+
+## 3. Required Dependencies
+
+Before installing CodeBoarding, the following software components must be present:
+
+- **Python Package Installer (pip)** — used to install Python packages
+- **Virtual Environment Tool (optional but highly recommended)** — `venv` or `virtualenv` for project isolation
+- **Git** — required to clone repositories for analysis
+
+### Python Libraries
+
+CodeBoarding depends on several Python libraries. These will be installed automatically during setup, but Python and pip must be functional first.
+
+Here are critical dependencies installed via pip:
+
+- `langchain_core`
+- `langchain_google_genai`
+- `langchain_openai`
+- `langchain_anthropic`
+- `langchain_aws`
+- `pydot`
+- `python-dotenv`
+- `tqdm`
+
+> All dependencies are managed via a `requirements.txt` or `setup.py` during installation.
+
+
+## 4. Network and Access Requirements
+
+- Ensure outgoing internet access to fetch dependencies from PyPI during installation.
+- If using APIs requiring keys (OpenAI, Anthropic, Google Gemini, AWS Bedrock), prepare your API keys before configuration as environment variables.
+- Firewall/Proxy settings must allow HTTPS traffic to relevant API endpoints.
+
+
+---
+
+## Practical Checklist: Confirm Your Environment
+
+- [ ] OS matches supported platforms (Windows 10+, macOS 10.15+, Linux)
+- [ ] Python 3.9 or higher installed (`python --version`)
+- [ ] pip functional (`pip --version`)
+- [ ] Git installed and available in PATH (`git --version`)
+- [ ] Firewall and network allow external HTTPS connections
+- [ ] API keys on hand if you plan to use LLM integrations
+
+
+---
+
+## Troubleshooting Common Setup Issues
+
+### Problem: Python version is too old or missing
+
+**Solution:**
+- Download and install the latest Python 3.9+ version from [python.org](https://www.python.org/downloads/).
+- Update your PATH environment variable to prioritize the new Python version.
+- Use `python3` instead of `python` on systems where Python 2.x is default.
+
+
+### Problem: pip command not found
+
+**Solution:**
+- Ensure pip is installed with Python (it is bundled since Python 3.4).
+- Run `python -m ensurepip --upgrade` to install or upgrade pip.
+- Consider using a virtual environment which provides isolated pip.
+
+
+### Problem: Network connection blocked during installation
+
+**Solution:**
+- Confirm proxy/firewall settings allow traffic to `pypi.org`.
+- Configure proxy settings for pip with environment variables like `HTTP_PROXY` and `HTTPS_PROXY`.
+
+
+### Problem: Missing Git command
+
+**Solution:**
+- Install git from [git-scm.com](https://git-scm.com/downloads).
+- Restart terminal or system to refresh PATH.
+
+
+---
+
+## Next Step: Environment Setup
+
+Once your system meets these requirements, proceed to the [Environment Setup](./environment-setup) guide to configure Python virtual environments, set environment variables, and prepare API credentials.
+
+
+---
+
+<Check>
+Always verify your system configuration before installation to avoid setup errors. Refer back to this page if you encounter issues during installation.
+</Check>
+
+
+---
+
+## Additional Resources
+
+- [What is CodeBoarding?](../../overview/intro-value-prop/what-is-codeboarding) — Understand the purpose and capabilities of CodeBoarding.
+- [Installation (All Platforms)](./installation-multi-platform) — Follow detailed installation instructions tailored to your OS.
+- [Troubleshooting Installation & Configuration](../troubleshooting-support/troubleshooting-install) — Solve common problems during setup.
+
+
+---
+
+# Summary Diagram of Setup Dependencies
+
+```mermaid
+flowchart TD
+    A[Supported Platforms]
+    B[Python 3.9+ Installed]
+    C[Pip Available]
+    D[Git Installed]
+    E[Network Access]
+    F[API Keys (Optional)]
+    G[CodeBoarding Installation]
+
+    A --> B --> C
+    C --> G
+    D --> G
+    E --> G
+    F -.-> G
+
+    classDef req fill:#f9f,stroke:#333,stroke-width:1px;
+    class A,B,C,D,E req;
+    class F fill:#fdf6e3,stroke:#333,stroke-width:1px,stroke-dasharray: 5 5;
+
+```
+
+This diagram shows mandatory requirements (solid arrows) and optional API keys (dashed arrow) feeding into CodeBoarding installation.
+
+
+---
+
+By confirming your system meets these requirements, you are laying the foundation for a successful CodeBoarding setup and analysis workflow.
+
+
+---
+
+*End of System Requirements & Prerequisites*

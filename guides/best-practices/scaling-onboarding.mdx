@@ -3,4 +3,304 @@ title: "Scaling Analysis Across Projects and Teams"
 description: "Covers strategies for running CodeBoarding across multiple repositories, managing concurrent analyses, sharing outputs, and setting up automated onboarding documentation for distributed teams."
 ---
 
-*This page will automatically be generated from the codebase*
+# Scaling Analysis Across Projects and Teams
+
+This guide covers effective strategies for running CodeBoarding across multiple repositories, managing concurrent analysis jobs, sharing generated outputs efficiently, and automating onboarding documentation in distributed team environments. Use this guide to optimize your workflow when handling large-scale or multi-team scenarios.
+
+---
+
+## 1. Overview
+
+### Purpose
+This page helps users run CodeBoarding at scale by:
+
+- Running analyses concurrently across multiple repositories
+- Managing and monitoring multiple generation jobs
+- Sharing and organizing generated onboarding documentation
+- Setting up automatic documentation generation for teams via CI/CD pipelines
+
+### Prerequisites
+To apply the strategies outlined here, ensure you have:
+
+- Installed CodeBoarding and configured environment variables (e.g., `REPO_ROOT`, `ROOT_RESULT`, API keys)
+- Familiarity with core CodeBoarding workflows for single-repo analysis (see [Analyzing Your First Repository](https://codeboarding.org/guides/getting-started/analyzing-first-repo))
+- Access to a multi-repository environment or multiple codebases to analyze
+- Basic knowledge of running Python scripts and/or configuring GitHub Actions
+
+### Expected Outcomes
+By following this guide, you'll be able to efficiently:
+
+- Launch and monitor documentation and diagram generation jobs for many repositories simultaneously
+- Organize generated outputs in centralized directories for easy team access
+- Automate onboarding documentation generation in CI workflows
+
+### Time Estimate
+Initial setup and testing: 30–60 minutes.
+Recurring runs scale proportionally based on number of repos and machine limits.
+
+### Difficulty Level
+Intermediate (involves coordination of concurrency, API usage, scripting, and CI automation)
+
+---
+
+## 2. Running CodeBoarding Across Multiple Repositories
+
+### Use Case
+Scaling CodeBoarding means efficiently analyzing many Git repositories, either sequentially or concurrently, without manual repetitive runs.
+
+### Step-by-Step Instructions
+
+<Steps>
+<Step title="Prepare the Repository List">
+Create a list of GitHub repository URLs to analyze. This can be a file or passed as CLI arguments.
+
+Example:
+```bash
+repos.txt
+https://github.com/user/repo1
+https://github.com/user/repo2
+https://github.com/user/repo3
+```
+</Step>
+<Step title="Use the Demo Script with Multiple Repos">
+Invoke `demo.py` passing multiple repository URLs to generate onboarding docs in one run.
+
+Example:
+```bash
+python demo.py https://github.com/user/repo1 https://github.com/user/repo2 --output-dir ./multi_repo_docs
+```
+
+This will analyze each repository in sequence, generating markdown files inside `./multi_repo_docs`.
+</Step>
+<Step title="Enable Concurrent Processing">
+To speed up processing, run multiple instances in parallel, considering system resources.
+
+Example (Linux/Mac):
+```bash
+cat repos.txt | xargs -n 1 -P 4 python demo.py --output-dir ./multi_repo_docs
+```
+
+The above runs up to 4 concurrent jobs.
+
+> **Tip:** Limit concurrency to match your CPU/Disk I/O capabilities to avoid overload.
+</Step>
+</Steps>
+
+### Expected Result
+
+- Multiple onboarding docs generated, one set per repo, organized under the specified output directory.
+- Logs will indicate success or errors per repo.
+
+---
+
+## 3. Managing Concurrent Analysis Jobs via HTTP API
+
+### Purpose
+Leverage the built-in asynchronous job management API in `local_app.py` to submit and track multiple analysis jobs programmatically.
+
+### Workflow
+
+1. **Submit jobs for each repo URL via POST `/generation`**
+2. **Track job status via GET `/generation/{job_id}`**
+3. **Retrieve result URLs pointing to generated documentation**
+
+### Step-by-Step Instructions
+
+<Steps>
+<Step title="Start Generation Job">
+Make a POST request:
+
+```http
+POST /generation?repo_url=https://github.com/user/repo1
+```
+
+Response:
+```json
+{
+  "job_id": "generated-uuid",
+  "status": "PENDING"
+}
+```
+</Step>
+<Step title="Check Job Status">
+Make a GET request using the job_id:
+
+```http
+GET /generation/{job_id}
+```
+
+Response will contain:
+- `status` (`PENDING`, `RUNNING`, `COMPLETED`, or `FAILED`)
+- `result` URL when completed
+- `error` message if failed
+</Step>
+<Step title="Automate Multiple Submissions">
+Use scripts or CI pipelines to:
+
+- Submit multiple jobs for repo URLs
+- Poll status endpoints periodically
+- Collect generated onboarding doc URLs
+
+Example Python:
+```python
+import requests
+repo_urls = ["https://github.com/user/repo1", "https://github.com/user/repo2"]
+job_ids = []
+
+for url in repo_urls:
+    r = requests.post("http://localhost:8000/generation", params={"repo_url": url})
+    job_ids.append(r.json()["job_id"])
+
+# Poll statuses in a loop or asynchronously
+```
+</Step>
+</Steps>
+
+### Important Notes
+
+- The system limits maximum concurrent jobs to 5 by default, configurable in `local_app.py`.
+- If you hit concurrency limits, jobs queue until slots free up.
+- Monitor job failures carefully; common errors include non-existent repos or generation errors.
+
+---
+
+## 4. Sharing and Organizing Generated Output
+
+### Use Case
+When working with multiple repositories or teams, centralized storage and organization of onboarding docs enables easy access and collaboration.
+
+### Best Practices
+
+- Define a consistent root directory for outputs, e.g., `ROOT_RESULT` environment variable (default: `./results`).
+- Use repository-specific subfolders.
+- Prefer output formats supported by your documentation systems (.md, .html, .mdx).
+- Use automated copies from temporary generation folders (`temp_repo_folder`) to the shared output folder.
+
+### How-To
+
+- When running `demo.py`, use the `--output-dir` parameter to specify a shared output directory.
+- The script copies markdown and JSON files to this directory.
+- For API job outputs, they are stored similarly and accessible as URLs.
+
+Example folder structure:
+```
+results/
+├── repo1/
+│   ├── on_boarding.md
+│   └── analysis.json
+├── repo2/
+│   ├── on_boarding.md
+│   └── analysis.json
+```
+
+### Maintaining Synchronization
+
+- Run periodic batch jobs to regenerate and update onboarding outputs.
+- Integrate with your version control or documentation hosting to publish updates.
+
+---
+
+## 5. Automating Documentation Generation for Distributed Teams
+
+### Why Automate?
+
+- Ensures onboarding docs stay current and consistent across repos
+- Frees engineers from manual runs
+- Enables integration into CI/CD pipelines for continuous documentation
+
+### Options
+
+- **GitHub Actions Integration:** Use the official [CodeBoarding GitHub Action](https://github.com/marketplace/actions/codeboarding-diagram-first-documentation) to trigger doc generation on push events.
+- **API-driven Automation:** Leverage `github_action.py` and `local_app.py` API endpoints to programmatically submit jobs from CI pipelines.
+
+### Example: GitHub Action Workflow
+
+```yaml
+name: CodeBoarding Onboarding Docs
+on:
+  push:
+    branches:
+      - main
+jobs:
+  generate_docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run CodeBoarding
+        uses: CodeBoarding/codeboarding-diagram-first-documentation@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-url: ${{ github.repository }}
+          output-dir: ".codeboarding"
+```
+
+### Custom CI API Job Submission
+
+Use the `/github_action/jobs` endpoint with payload:
+
+```json
+{
+  "url": "https://github.com/user/repo",
+  "source_branch": "main",
+  "target_branch": "main",
+  "extension": ".md",
+  "output_directory": ".codeboarding"
+}
+```
+
+This triggers asynchronous background generation suitable for CI integration.
+
+---
+
+## 6. Troubleshooting Common Scaling Issues
+
+<AccordionGroup title="Common Issues in Scaling CodeBoarding">
+<Accordion title="Job Queuing or Concurrency Limits">
+If many jobs are submitted simultaneously, some may queue up due to concurrency limits (default 5). Monitor logs and increase `MAX_CONCURRENT_JOBS` cautiously if resource capacity allows.
+
+**Tip:** Monitor system CPU and I/O to avoid overload.
+</Accordion>
+<Accordion title="Repository Not Found or Clone Failures">
+Jobs may fail if the GitHub URL is invalid, private without credentials, or the repo does not exist.
+
+**Solution:** Verify repository URLs and ensure access tokens are set (e.g., `GITHUB_TOKEN`).
+</Accordion>
+<Accordion title="No Output Files Generated">
+If no documentation files are produced, check repository structure, branch names, and repository cloning success.
+
+**Tip:** Enable detailed logging to identify issues.
+</Accordion>
+<Accordion title="Environment Variable Misconfiguration">
+Errors can arise if key variables (`REPO_ROOT`, `ROOT_RESULT`, or API keys) are missing or incorrect.
+
+**Solution:** Verify environment variable setup before large batch runs.
+</Accordion>
+</AccordionGroup>
+
+---
+
+## 7. Best Practices for Scaling Onboarding
+
+- **Batch submissions:** Submit jobs in manageable batches instead of all at once.
+- **Caching:** Enable documentation caching to skip unchanged repositories.
+- **Naming conventions:** Use clear folder structures and naming for easy sharing.
+- **Monitoring:** Use job APIs to actively track progress across multiple jobs.
+- **Automated cleanup:** Remove temporary folders after successful jobs to save disk space.
+- **CI Integration:** Automate onboarding doc generation triggered on code changes.
+- **Documentation sharing:** Publish generated docs on internal dashboards or repos with hyperlinks for team visibility.
+
+---
+
+## 8. Next Steps & Related Resources
+
+- [Working with Integrations](https://codeboarding.org/guides/core-workflows/working-with-integrations) — for IDE and CI/CD integration details
+- [Using the CLI and HTTP API](https://codeboarding.org/guides/core-workflows/cli-and-api-usage) — examples of job submission and API usage
+- [Customizing the Analysis Process](https://codeboarding.org/guides/core-workflows/customizing-analysis) — tune analysis depth and caching
+- [Troubleshooting Installation](https://codeboarding.org/getting-started/troubleshooting-support/troubleshooting-install) — tips on setup issues
+- Review the [API Layer and Orchestration Workflow](.codeboarding/Orchestration_Workflow.md) documentation to understand how jobs are managed internally.
+
+<Tip>
+Scaling CodeBoarding effectively can dramatically speed onboarding and maintain up-to-date documentation, but always test concurrency and automation setups in a controlled environment before full rollout.
+</Tip>
+
+---

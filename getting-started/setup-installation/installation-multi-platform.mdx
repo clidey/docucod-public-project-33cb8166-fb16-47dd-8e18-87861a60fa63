@@ -3,4 +3,205 @@ title: "Installation (All Platforms)"
 description: "Instructions for installing CodeBoarding on major platforms, highlighting OS-agnostic steps and any special notes for Windows, macOS, or Linux users."
 ---
 
-*This page will automatically be generated from the codebase*
+# Installation (All Platforms)
+
+Welcome to the CodeBoarding installation guide for all major platforms. This document will guide you step-by-step through installing CodeBoarding on Windows, macOS, and Linux, emphasizing cross-platform compatibility while highlighting platform-specific notes to ensure a smooth setup experience.
+
+---
+
+## 1. Prerequisites & System Requirements
+
+Before installing CodeBoarding, verify your system meets these essential requirements:
+
+- **Operating Systems Supported:**
+  - Windows 10 or later
+  - macOS 12 (Monterey) or later
+  - Linux distributions (Ubuntu 20.04+, Debian 11+, Fedora 35+)
+- **Python Version:** Python 3.11 (recommended) installed and accessible from your command line.
+- **Disk Space:** Minimum 500 MB free space for installation and temporary files.
+- **Memory:** At least 4 GB RAM for smooth operation.
+- **Network:** Internet connection required for downloading dependencies and, if applicable, API key verification.
+
+### Platform-Specific Notes
+
+- **Windows:** Ensure you have [Windows Subsystem for Linux (WSL)](https://learn.microsoft.com/en-us/windows/wsl/install) if you prefer a UNIX-like environment, although native Windows installation is fully supported.
+- **macOS:** Confirm Xcode Command Line Tools are installed (`xcode-select --install`).
+- **Linux:** Ensure Python 3.11 is installed via system package managers or from source.
+
+<Tip>
+If you are unsure about your Python version, run `python3 --version` or `python --version` in your terminal to verify.
+</Tip>
+
+---
+
+## 2. Installation Instructions
+
+CodeBoarding’s installation process uses platform-neutral commands primarily based on Python tooling. Follow the steps below for all platforms, with platform-specific notes provided.
+
+### Step 1: Installing Python 3.11
+
+If Python 3.11 is not already installed, install it as follows:
+
+- **Windows:** Download and install from the [official Python downloads page](https://www.python.org/downloads/windows/). Make sure to add Python to your PATH during setup.
+- **macOS:** Use Homebrew:
+
+```bash
+brew install python@3.11
+```
+
+- **Linux (Ubuntu/Debian):** Add deadsnakes PPA and install:
+
+```bash
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt update
+sudo apt install python3.11 python3.11-venv python3.11-distutils
+```
+
+- **Linux (Fedora):**
+
+```bash
+sudo dnf install python3.11
+```
+
+### Step 2: Clone or Download CodeBoarding
+
+Open your terminal or command prompt and clone the repository:
+
+```bash
+git clone https://github.com/CodeBoarding/CodeBoarding.git
+cd CodeBoarding
+```
+
+<Tip>
+If you do not have Git installed, download the ZIP archive from GitHub and extract it to a convenient location before navigating into it.
+</Tip>
+
+### Step 3: Create and Activate a Python Virtual Environment
+
+This step isolates CodeBoarding’s dependencies and avoids conflicts.
+
+**For all OS:**
+
+```bash
+python3.11 -m venv codeboarding-env
+```
+
+Activate the environment:
+
+- **Windows (Command Prompt):**
+  ```batch
+  codeboarding-env\Scripts\activate.bat
+  ```
+- **Windows (PowerShell):**
+  ```powershell
+  codeboarding-env\Scripts\Activate.ps1
+  ```
+- **macOS/Linux:**
+  ```bash
+  source codeboarding-env/bin/activate
+  ```
+
+### Step 4: Install Required Dependencies
+
+Inside the activated virtual environment, run:
+
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+This installs all the necessary Python packages CodeBoarding needs.
+
+### Step 5: Verify Installation
+
+Run the following command to confirm CoreBoarding CLI is accessible:
+
+```bash
+python -m vscode_runnable --help
+```
+
+You should see a detailed list of options and usage instructions, indicating the tools are ready.
+
+<Tip>
+If you encounter issues running this command, ensure your Python environment is activated and that you are inside the CodeBoarding directory.
+</Tip>
+
+---
+
+## 3. Platform-Specific Special Notes
+
+### Windows
+
+- When activating the virtual environment in PowerShell, if you see an execution policy error, run:
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+- Use `cmd` or PowerShell consistently to avoid environment activation confusion.
+
+### macOS
+
+- Ensure Command Line Tools are installed. Some Python dependencies rely on `make` and other build tools.
+
+```bash
+xcode-select --install
+```
+
+### Linux
+
+- Use proper package managers and ensure Python 3.11 is the default python3:
+
+```bash
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 2
+sudo update-alternatives --config python3
+```
+
+- You may need to install `python3.11-venv` or similar packages for virtual environment support.
+
+---
+
+## 4. Troubleshooting Common Installation Issues
+
+<AccordionGroup title="Common Installation Issues & Solutions">
+<Accordion title="Virtual Environment Won't Activate">
+Check your terminal type and permissions. On Windows PowerShell, adjust execution policy. Ensure you use the activation script corresponding to your shell.
+</Accordion>
+<Accordion title="Python 3.11 Not Found">
+Verify Python 3.11 installation path and add it to your system PATH variable. Use `python3.11` command explicitly.
+</Accordion>
+<Accordion title="Dependency Installation Fails On macOS/Linux">
+Ensure you have developer tools installed (Xcode command line tools or build essentials). Check your internet connection to download packages.
+</Accordion>
+<Accordion title="Command Not Found After Installation">
+Confirm your virtual environment is activated. Run installation commands inside the virtual environment.
+</Accordion>
+</AccordionGroup>
+
+---
+
+## 5. Next Steps
+
+After successfully installing CodeBoarding:
+
+- Proceed to [Environment Setup](../configuration-first-run/config-env-vars) to configure environment variables.
+- Follow the [Running Your First CodeBase Analysis](../configuration-first-run/first-analysis) guide to analyze your first project.
+- Review [Troubleshooting Installation & Configuration](../troubleshooting-support/troubleshooting-install) if you encounter any issues.
+
+<Check>
+Installation complete and verified! You're ready to explore CodeBoarding's powerful analysis capabilities across all platforms.
+</Check>
+
+---
+
+## Helpful Links
+
+- [System Requirements & Prerequisites](/getting-started/setup-installation/prerequisites)
+- [Environment Setup](/getting-started/setup-installation/environment-setup)
+- [Running Your First CodeBase Analysis](/getting-started/configuration-first-run/first-analysis)
+
+---
+
+Thank you for choosing CodeBoarding!
+
+---

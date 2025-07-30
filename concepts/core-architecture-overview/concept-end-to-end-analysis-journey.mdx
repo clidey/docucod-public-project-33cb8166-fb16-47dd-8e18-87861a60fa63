@@ -3,4 +3,199 @@ title: "End-to-End Analysis Journey"
 description: "Follow the step-by-step journey of a repository through CodeBoarding—from ingestion through diagram generation to interactive outputs. Unpack the lifecycle of an analysis job, discover touch points with user tools (CLI, API, IDE integrations), and learn how results are generated, cached, and delivered for immediate use."
 ---
 
-*This page will automatically be generated from the codebase*
+# End-to-End Analysis Journey
+
+Unlock the full story of a repository's path through CodeBoarding: from initial ingestion of the source code to the generation of rich, interactive diagrams and comprehensive output. This page walks you through the complete lifecycle of an analysis job, reveals how each subsystem collaborates, and demonstrates how users interact through CLI, API, and IDE integrations to receive immediate, actionable insights.
+
+---
+
+## 1. Overview of the Analysis Journey
+
+At its core, the analysis journey in CodeBoarding is a well-orchestrated pipeline that transforms raw source code into meaningful, high-level visualizations and documentation. Each stage contributes a crucial piece to this transformation:
+
+- **Ingestion & Static Parsing:** The raw code is initially processed without AI, converting code into structured models.
+- **AI-Powered Interpretation:** Leveraging multi-agent AI, static data is enriched with architectural insights, abstractions, and change analyses.
+- **Persistence & Caching:** Results are saved for incremental runs, improving efficiency.
+- **Output Generation:** The final data models are rendered into human-friendly diagrams and documentation.
+
+This flow ensures users get comprehensive, accurate, and interactive views of their codebases with minimal delay and maximal detail.
+
+---
+
+## 2. Step-by-Step User Flow
+
+### Step 1: Analysis Request Initiation
+
+- **How it Happens:** Users trigger an analysis via the CLI, HTTP API, or through IDE integrations like the VS Code extension.
+- **Intent:** Provide a repository URL or local path along with optional parameters such as output directory or analysis depth.
+- **Outcome:** The system validates the request and prepares to analyze the provided codebase.
+
+### Step 2: Orchestration & Workflow Management
+
+- **Role:** The orchestration component coordinates the entire analysis pipeline.
+- **Key Actions:**
+  - Initiates the static analysis of the codebase.
+  - Checks and manages cached data to optimize performance.
+  - Submits structured code data to the AI Analysis Engine.
+  - Collects and validates the AI-generated high-level analysis.
+  - Passes results for final rendering.
+
+### Step 3: Static Code Analysis
+
+- **Purpose:** Transforms raw source files into structured data through ASTs, Call Graphs, and Structure Graphs.
+- **Details:** Uses AST-based parsing techniques to extract metadata.
+- **Why It Matters:** Provides the foundational data that the AI engine interprets.
+
+### Step 4: AI Analysis Engine Processing
+
+- **Core of the Journey:** This cognitive subsystem applies a multi-agent AI framework to the structured data.
+- **Agents Involved:**
+  - **CodeBoardingAgent:** Central coordinator managing analysis steps.
+  - **PlannerAgent:** Strategically plans AI tasks.
+  - **AbstractionAgent:** Generates high-level abstractions and summaries.
+  - **DiffAnalyzerAgent:** Analyzes changes between code versions when applicable.
+- **Result:** Rich, semantic models of project architecture, design patterns, and component roles.
+
+### Step 5: Analysis Persistence & Caching
+
+- **Functionality:** Stores analysis results in JSON format.
+- **Benefit:** Enables faster incremental analysis by reusing prior data and calculating diffs.
+- **Reliability:** Ensures integrity and provides historical tracking of codebase changes.
+
+### Step 6: Output Generation
+
+- **What Happens:** The output generator takes the AI-enriched model and renders it into:
+  - Markdown files with Mermaid.js interactive diagrams
+  - HTML and Sphinx documentation formats
+  - Other formats like MDX for documentation frameworks
+- **User Value:** Delivers actionable, visual onboarding materials ready for integration.
+
+---
+
+## 3. Touch Points with User Tools
+
+### CLI Interface
+
+- Users run commands like `python demo.py <repo_url> --output-dir <path>` to start analyses.
+- Command options allow controlling depth and caching behavior.
+
+### HTTP API
+
+- Provides endpoints to submit repos for analysis asynchronously.
+- Users can poll job status and obtain direct links to generated outputs.
+
+### IDE Integrations
+
+- The VS Code extension enables interactive exploration directly inside the editor.
+- Users can visualize the analysis results in real-time and navigate code architecture.
+
+---
+
+## 4. How Results are Generated, Cached, and Delivered
+
+### Generation
+
+- Data flows from static analysis into the AI Engine where multi-agent cooperation builds abstractions.
+- Agents process raw CFGs, source structure, and diffs, gradually building insights.
+- AI-generated explanations map complex code into digestible diagrams.
+
+### Caching
+
+- Analysis results are serialized to JSON and stored.
+- On subsequent runs, the system compares new code with cached states to avoid redundant work.
+- This incremental approach shortens analysis time for large or frequently updated projects.
+
+### Delivery
+
+- Finished models are handed off to output generators which create user-friendly, interactive documents.
+- These outputs can be immediately consumed via:
+  - Static documentation websites
+  - IDE tooltips and panels
+  - CI/CD pipeline artifacts
+
+---
+
+## 5. System Interaction Diagram
+
+```mermaid
+flowchart TD
+    UserInput["User initiates analysis via CLI, API, or IDE"]
+    Orchestration["Orchestration & Workflow"]
+    StaticAnalysis["Static Code Analyzer"]
+    AIEngine["AI Analysis Engine"]
+    Persistence["Analysis Persistence & Cache"]
+    OutputGen["Output Generator"]
+    UserOutput["User reviews interactive diagrams and docs"]
+
+    UserInput --> Orchestration
+    Orchestration --> StaticAnalysis
+    StaticAnalysis --> Orchestration
+    Orchestration --> AIEngine
+    AIEngine --> Orchestration
+    Orchestration --> Persistence
+    Persistence --> Orchestration
+    Orchestration --> OutputGen
+    OutputGen --> UserOutput
+
+    click Orchestration href 'https://github.com/CodeBoarding/CodeBoarding/blob/main/.codeboarding/Orchestration_Workflow.md' "Details on Orchestration"
+    click StaticAnalysis href 'https://github.com/CodeBoarding/CodeBoarding/blob/main/.codeboarding/Static_Code_Analyzer.md' "Details on Static Code Analyzer"
+    click AIEngine href 'https://github.com/CodeBoarding/CodeBoarding/blob/main/.codeboarding/AI_Analysis_Engine.md' "Details on AI Analysis Engine"
+    click OutputGen href 'https://github.com/CodeBoarding/CodeBoarding/blob/main/.codeboarding/Output_Generator.md' "Details on Output Generator"
+```
+
+---
+
+## 6. Practical Tips for Users
+
+- **Start Small:** Begin with shallow analysis depth (`DIAGRAM_DEPTH_LEVEL=1`) to quickly get results.
+- **Enable Caching:** Use caching to accelerate repeat runs and iterative code reviews.
+- **Choose the Best LLM Provider:** Google Gemini-2.5-Pro is recommended for clear, detailed diagrams.
+- **Leverage Integrations:** Use the VS Code extension and GitHub Action for seamless daily workflows.
+- **Monitor Logs:** For troubleshooting, check the orchestration and AI engine logs to identify bottlenecks or errors.
+
+---
+
+## 7. Common Pitfalls & Troubleshooting
+
+- **Analysis Stalls:** Typically caused by connectivity issues with LLM providers or incorrect API keys.
+- **Incomplete Diagrams:** May result from too low diagram depth or missing source files.
+- **Caching Issues:** Clear cache if you suspect stale data causing inaccurate outputs.
+
+Refer to the [Troubleshooting Installation & Configuration](../../getting-started/troubleshooting-support/troubleshooting-install) and [Community & Support Resources](../../getting-started/troubleshooting-support/community-links) for more help.
+
+---
+
+## 8. Further Exploration
+
+To deepen your understanding, consider exploring the following documents:
+
+- [System Architecture Essentials](./concept-architecture-essentials) — foundational architecture and interplay of components.
+- [Static Code Analyzer](./Static_Code_Analyzer.md) — detailed view on how raw code is converted into structured data.
+- [AI Analysis Engine](./AI_Analysis_Engine.md) — dive into the AI agent collaboration and reasoning.
+- [Output Generator](./Output_Generator.md) — learn how final, consumable outputs are produced.
+- [Integrating CodeBoarding](../../overview/features-integrations/integration-touchpoints) — how to embed CodeBoarding smoothly in your workflows.
+
+---
+
+By mastering this journey, you empower your team to onboard faster, understand complex codebases quicker, and maintain documentation that scales alongside your projects.
+
+---
+
+# Related Documentation
+
+| Section | Link |
+|---------|-------|
+| System Architecture Overview | [/concepts/core-architecture-overview/concept-architecture-essentials](./concept-architecture-essentials) |
+| AI Analysis Engine | [/concepts/core-architecture-overview/concept-ai-analysis-engine](./AI_Analysis_Engine.md) |
+| Static Code Analyzer | [/concepts/core-architecture-overview/concept-static-code-analyzer](./Static_Code_Analyzer.md) |
+| Output Generator | [/concepts/core-architecture-overview/concept-output-generator](./Output_Generator.md) |
+| CLI & API Usage | [../../guides/core-workflows/cli-and-api-usage](../../guides/core-workflows/cli-and-api-usage) |
+| Troubleshooting & Support | [../../getting-started/troubleshooting-support/community-links](../../getting-started/troubleshooting-support/community-links) |
+
+---
+
+# Summary
+
+This guide detailed the full end-to-end journey of a repository analyzed by CodeBoarding. By walking through each step—from initial ingestion by the static analyzer to AI-driven abstraction and final output generation—it paints a clear picture of how an analysis job progresses and how users interact with the system via CLI, API, and IDE tools. This knowledge helps users optimize their workflow and troubleshoot effectively.
+
+---

@@ -3,4 +3,175 @@ title: "Integrating CodeBoarding"
 description: "Describes integration paths for CodeBoarding: VS Code Extension for in-IDE diagrams, GitHub Action for CI/CD documentation automation, and MCP Server support for serving docs to AI assistants. Explains high-level configuration required for common integrations."
 ---
 
-*This page will automatically be generated from the codebase*
+# Integrating CodeBoarding
+
+CodeBoarding offers seamless integration options that embed its powerful codebase analysis capabilities directly into your development workflows. Whether you want interactive in-IDE diagrams, automated documentation generation in CI/CD pipelines, or serving documentation snapshots to AI assistants, CodeBoarding supports tailored integration paths to unlock maximum productivity.
+
+---
+
+## Why Integrate CodeBoarding?
+
+Modern software development demands quick insight into complex Python codebases without interrupting workflows. CodeBoarding’s integrations let you achieve this by embedding high-level architectural visualizations and documentation where you need it most:
+
+- Within your editor, so you can explore and understand code visually as you write.
+- In your CI/CD pipeline, automating updated documentation delivery on every commit.
+- Served live to AI-based assistants that augment developer productivity.
+
+These integrations transform CodeBoarding from a standalone tool into a natural, continuous companion for developers.
+
+---
+
+## Integration Paths
+
+### 1. VS Code Extension — In-IDE Diagrams
+
+The **CodeBoarding VS Code Extension** integrates interactive diagrams directly within the Visual Studio Code environment.
+
+**Benefits:**
+- Instantly visualize project architecture without leaving the IDE.
+- Navigate complex relationships between modules graphically.
+- Reduce context switching and dramatically speed up onboarding.
+
+**How it Works:**
+- The extension communicates with your local or remote CodeBoarding analysis outputs.
+- It renders interactive Mermaid.js diagrams inline, letting you expand or drill down as needed.
+
+**Getting Started Tip:**
+- Install the extension from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=Codeboarding.codeboarding).
+- Configure project paths and refresh interval settings to sync your analysis output.
+
+---
+
+### 2. GitHub Action — CI/CD Documentation Automation
+
+The **CodeBoarding GitHub Action** enables automated generation of up-to-date architectural diagrams and documentation as part of your repository’s CI/CD workflows.
+
+**Benefits:**
+- Automatically generate and update onboarding docs on every push or pull request.
+- Ensure architectural documentation stays in sync with code changes.
+- Integrate with GitHub Pages or other documentation hosts seamlessly.
+
+**High-Level Workflow:**
+- On a trigger event (push, PR), the action clones your repository.
+- Runs static analysis and AI-driven modeling.
+- Produces Markdown and Mermaid.js diagrams.
+- Commits the generated docs back to a branch or publishes artifacts.
+
+**Configuration Highlights:**
+- Use the provided [github_action.py](https://github.com/CodeBoarding/CodeBoarding/blob/main/github_action.py) script as a reference.
+- Provide required environment variables like `GITHUB_TOKEN` for repository access.
+
+**Example Usage:**
+```yaml
+name: Generate CodeBoarding Docs
+on: [push]
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run CodeBoarding
+        uses: codeboarding/codeboarding-action@main
+        with:
+          repo-url: ${{ github.repository }}
+          output-dir: ./docs/generated
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+---
+
+### 3. MCP Server — Serving Docs to AI Assistants
+
+The **MCP Server** integration serves CodeBoarding-generated documentation snapshots to AI assistant clients such as ClaudeCode, VSCode AI extensions, or Cursor.
+
+**Benefits:**
+- Enables AI agents to consume concise, structured architecture insights.
+- Enhances AI-assisted code comprehension, summarization, and navigation.
+- Provides a standardized backend for feeding up-to-date knowledge into AI tooling.
+
+**Integration Overview:**
+- The MCP Server hosts JSON or Markdown representations of analysis results.
+- AI clients query the server to fetch architectural models and context.
+- The server supports rapid updates as new analyses complete.
+
+**Setup Tips:**
+- Ensure MCP Server configuration points to your latest CodeBoarding output.
+- Secure access using tokens or other authentication as required.
+
+---
+
+## High-Level Configuration for Common Integrations
+
+Regardless of integration choice, a few configuration elements are shared and essential:
+
+| Setting                    | Purpose                                         | Example                   |
+|----------------------------|------------------------------------------------|---------------------------|
+| `REPO_ROOT`                | Local path for cloning repositories             | `./repos`                 |
+| `ROOT_RESULT`              | Output directory for generated docs/diagrams   | `./results`               |
+| `PROJECT_ROOT`             | Absolute path to your source project root       | `/home/user/myproject`    |
+| `GITHUB_TOKEN`             | Token for GitHub API access, private repos     | `<your_github_token>`     |
+| `DIAGRAM_DEPTH_LEVEL`      | Controls level of detail in generated diagrams | `1` (default)             |
+
+For CI/CD or extension-specific setups, environment variables and additional config options may be required;
+refer to integration-specific README files or the central [configuration documentation](https://github.com/CodeBoarding/CodeBoarding/blob/main/.codeboarding/Orchestration_Workflow.md).
+
+---
+
+## Best Practices & Tips
+
+- **Keep diagrams focused:** Adjust `DIAGRAM_DEPTH_LEVEL` to balance detail and usability.
+- **Version control generated docs:** For CI/CD, commit generated documentation to a dedicated branch to track evolution.
+- **Automate refreshes:** In VS Code Extension settings, enable auto-refresh to keep diagrams current.
+- **Secure tokens:** Use secrets management for tokens in automation workflows.
+- **Start small:** Begin integration with simple projects to validate your pipeline before scaling.
+
+---
+
+## Troubleshooting Common Issues
+
+<AccordionGroup title="Common Integration Challenges and Solutions">
+<Accordion title="VS Code Extension shows no diagrams or stale content">
+- Ensure the extension is properly installed and enabled.
+- Confirm the output directory used by CodeBoarding matches the extension settings.
+- Verify that analysis runs have completed and generated diagram files.
+- Reload VS Code window or restart the extension if diagrams do not update.
+</Accordion>
+<Accordion title="GitHub Action fails to run or produce output">
+- Check that `GITHUB_TOKEN` is correctly set with repo permissions.
+- Confirm configuration options in the action YAML are accurate for your repo structure.
+- Review action logs for errors related to missing dependencies or network failures.
+- Test the analysis command locally to isolate issues.
+</Accordion>
+<Accordion title="MCP Server doesn’t serve updated docs to AI clients">
+- Confirm MCP Server points to the latest output directory.
+- Check server logs for file access or network errors.
+- Validate AI clients have correct endpoint and authentication settings.
+- Refresh the server cache if applicable.
+</Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+- Explore detailed setup guides for:
+  - [Running Your First CodeBase Analysis](../getting-started/configuration-first-run/first-analysis)
+  - [Working with Integrations](../guides/core-workflows/working-with-integrations)
+- Review the [System Architecture Overview](../overview/architecture-core-concepts/system-architecture-overview) page to better understand integration internals.
+- Join the [CodeBoarding community and support](../getting-started/troubleshooting-support/community-links) for assistance.
+
+---
+
+## Related Documentation
+
+- [System Architecture Overview](../overview/architecture-core-concepts/system-architecture-overview)
+- [Orchestration & Workflow](.codeboarding/Orchestration_Workflow.md)
+- [Static Code Analyzer](.codeboarding/Static_Code_Analyzer.md)
+- [AI Analysis Engine](.codeboarding/AI_Analysis_Engine.md)
+- [Output Generator](.codeboarding/Output_Generator.md)
+- [Configuration & Environment Variables](../getting-started/configuration-first-run/config-env-vars)
+
+---
+
+Leverage CodeBoarding integrations to bring clarity, automation, and AI-embeddable insights directly into your developer workflows—accelerate onboarding and streamline documentation effortlessly.
